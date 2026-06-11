@@ -31,3 +31,24 @@ def find_social_links(html: str) -> dict:
         elif "linkedin.com/company" in href:
             links["linkedin"] = a["href"]
     return links
+
+def find_emails(html: str) -> set:
+    """Extract valid emails from HTML using regex."""
+    if not html:
+        return set()
+    
+    # Standard email regex pattern
+    email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+    emails = set(re.findall(email_pattern, html))
+    
+    # Filter out common false positives (image files that look like emails, sentry emails, etc.)
+    valid_emails = set()
+    for email in emails:
+        email = email.lower()
+        if any(email.endswith(ext) for ext in ['.png', '.jpg', '.jpeg', '.gif', '.webp']):
+            continue
+        if 'sentry' in email or 'example' in email or 'test@' in email or 'noreply' in email or 'no-reply' in email:
+            continue
+        valid_emails.add(email)
+        
+    return valid_emails
