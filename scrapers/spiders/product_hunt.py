@@ -7,6 +7,7 @@ from core.models import Company
 
 async def scrape_product_hunt(max_companies=5):
     print(f"Starting Product Hunt scrape for {max_companies} products...")
+    added_domains = []
     
     async with aiohttp.ClientSession() as session:
         async with session.get('https://www.producthunt.com/feed') as resp:
@@ -49,8 +50,11 @@ async def scrape_product_hunt(max_companies=5):
                             db.add(company)
                             await db.commit()
                             print(f"Added from PH: {title} ({domain})")
+                            added_domains.append(domain)
                             added += 1
                         else:
                             print(f"Already exists: {domain}")
                 except Exception as e:
                     print(f"Skipping {title} - redirect failed: {e}")
+
+    return added_domains

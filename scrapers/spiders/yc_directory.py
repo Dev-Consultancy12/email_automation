@@ -5,6 +5,7 @@ from core.models import Company
 
 async def scrape_yc_directory(max_companies=5):
     print(f"Starting Hacker News (YC) scrape for {max_companies} companies...")
+    added_domains = []
     
     async with aiohttp.ClientSession() as session:
         # Fetch latest Show HN stories
@@ -39,6 +40,9 @@ async def scrape_yc_directory(max_companies=5):
                         db.add(company)
                         await db.commit()
                         print(f"Added from HN (YC): {title} ({domain})")
+                        added_domains.append(domain)
                         added += 1
                     else:
                         print(f"Already exists: {domain}")
+
+    return added_domains
