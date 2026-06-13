@@ -33,6 +33,7 @@ Here is a summary of everything we have accomplished up to this point. We have j
 - Transitioned from brittle Playwright web-scraping to faster, native API/RSS fetching to bypass Cloudflare Turnstile blocks.
 - **Hacker News (YC) Scraper**: Built `scrapers/spiders/yc_directory.py` to query the official HN API for "Show HN" launches and extract startup domains.
 - **Product Hunt Scraper**: Built `scrapers/spiders/product_hunt.py` to parse the official PH RSS feed and extract outbound startup links.
+- **Direct Email Web Scraper**: Integrated `email_scraper.py` into the main `run_scrapers.py` workflow. Whenever new companies are found by the spiders, a background thread using `asyncio.to_thread` automatically crawls their websites and parses HTML via regex to find and save direct email addresses.
 - Created `run_scrapers.py` as a CLI runner.
 - **Verified with actual data**: Successfully populated the local PostgreSQL database with live startups! Here is the actual data fetched during our test run:
   - **Show HN: MimicScribe** (mimicscribe.app) - Source: `hacker_news`
