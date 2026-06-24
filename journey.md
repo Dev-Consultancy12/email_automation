@@ -86,9 +86,17 @@ Here is a summary of everything we have accomplished up to this point. We have j
 Project Antigravity is officially fully built. The system provides a complete end-to-end pipeline:
 **Discover (APIs/RSS) -> Scrape -> Enrich (Hunter) -> Verify (ZeroBounce) -> Store (Postgres) -> Schedule (Celery) -> Send (SendGrid) -> Track (FastAPI Webhooks)**
 
+---
+
+## 10. Phase 6: Stabilization & Bug Fixes (Completed)
+- **Bypassed Cloudflare Turnstile on Product Hunt**: Updated the `product_hunt.py` scraper to block auto-redirects and manually extract the `Location` header to bypass Cloudflare Turnstile blocks, correctly capturing clean startup domains without tracking query params.
+- **Fixed Email Scraper Crash**: Resolved an indentation block bug in `email_scraper.py` that was crashing the automated deep website contact scraper.
+- **Fixed Enrichment Integrity Errors**: Handled duplicate email unique constraint violations in `run_enrichment.py` to allow the system to gracefully skip existing contacts already found via web scraping.
+- **Windows Celery Fix**: Discovered and documented the `[WinError 5]` crash occurring when running Celery natively on Windows.
+
 To take it live:
 1. Input your real API keys in the `.env` file.
 2. Run `python run_scrapers.py` to ingest new startups.
 3. Run `python run_enrichment.py` to find emails.
 4. Run `python run_scheduler.py` to queue emails.
-5. (Running constantly): `uvicorn main:app` and `celery worker`.
+5. (Running constantly): `uvicorn main:app` and `celery -A core.celery_app worker --pool=solo --loglevel=info` (Note: `--pool=solo` is required on Windows!).
