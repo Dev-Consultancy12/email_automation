@@ -37,9 +37,15 @@ async def scrape_product_hunt(max_companies=5):
                     
                 # Resolve the redirect
                 try:
-                    async with session.get(outbound_link, allow_redirects=True, timeout=10) as dest_resp:
-                        final_url = str(dest_resp.url)
-                        domain = final_url.split("//")[-1].split("/")[0].replace("www.", "")
+                    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+                    async with session.get(outbound_link, allow_redirects=False, timeout=10, headers=headers) as dest_resp:
+                        if dest_resp.status in (301, 302) and 'Location' in dest_resp.headers:
+                            final_url = dest_resp.headers['Location']
+                        else:
+                            final_url = str(dest_resp.url)
+                            
+                        # Parse domain properly dropping query params
+                        domain = final_url.split("//")[-1].split("/")[0].split("?")[0].replace("www.", "")
                         
                         # Store in DB
                         result = await db.execute(select(Company).where(Company.domain == domain))

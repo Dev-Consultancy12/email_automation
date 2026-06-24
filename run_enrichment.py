@@ -41,6 +41,11 @@ async def enrich_companies():
                 if not email_addr:
                     continue
                     
+                # Check if email exists
+                email_check = await db.execute(select(Contact).where(Contact.email == email_addr))
+                if email_check.scalars().first():
+                    continue
+
                 # Create contact
                 contact = Contact(
                     company_id=company.id,

@@ -261,16 +261,60 @@ async def save_to_database(
             if existing:
                 continue
 
+            
+
+            name = email.split("@")[0]
+
+            name = (
+                name.replace(".", " ")
+                    .replace("_", " ")
+                    .replace("-", " ")
+                    .title()
+            )
+
+            role = "General"
+
+            email_lower = email.lower()
+
+            if "sales" in email_lower:
+                role = "Sales"
+                name = "Sales Team"
+
+            elif "support" in email_lower:
+                role = "Support"
+                name = "Support Team"
+
+            elif "privacy" in email_lower:
+                role = "Privacy"
+                name = "Privacy Team"
+
+            elif "security" in email_lower:
+                role = "Security"
+                name = "Security Team"
+
+            elif "dpo" in email_lower:
+                role = "Data Protection Officer"
+                name = "DPO"
+
+            elif "ceo" in email_lower:
+                role = "CEO"
+
+            elif "cto" in email_lower:
+                role = "CTO"
+
+            elif "founder" in email_lower:
+                role = "Founder"
+
             contact = Contact(
                 company_id=company.id,
-                name="Unknown",
+                name=name,
                 email=email,
-                role="Unknown"
+                role=role
             )
 
             db.add(contact)
 
-            saved_count += 1
+        saved_count += 1
 
         await db.commit()
 
