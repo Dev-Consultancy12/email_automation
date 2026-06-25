@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from core.config import settings
 from scrapers.extractors import find_emails
 
+<<<<<<< HEAD
 # Map email local-part keywords → human-readable role labels
 ROLE_MAP = {
     # Executive
@@ -117,6 +118,8 @@ def infer_name_from_email(email: str) -> str:
 
     return None
 
+=======
+>>>>>>> 0afe74a5532695c5acf969057c8e84c186b53c27
 async def crawl_domain_for_emails(domain: str) -> list[dict]:
     """Crawl a domain's homepage and contact pages to find emails."""
     print(f"[Scraper] Crawling {domain} for emails...")
@@ -168,6 +171,7 @@ async def crawl_domain_for_emails(domain: str) -> list[dict]:
                 
     contacts = []
     for email in found_emails:
+<<<<<<< HEAD
         role = infer_role_from_email(email)
         name = infer_name_from_email(email)
         first_name = name.split()[0] if name else "Unknown"
@@ -178,6 +182,14 @@ async def crawl_domain_for_emails(domain: str) -> list[dict]:
             "value":      email,
             "position":   role,
             "linkedin":   None
+=======
+        contacts.append({
+            "first_name": "Unknown",
+            "last_name": "",
+            "value": email,
+            "position": "General",
+            "linkedin": None
+>>>>>>> 0afe74a5532695c5acf969057c8e84c186b53c27
         })
     if contacts:
         print(f"[Scraper] Found {len(contacts)} emails on {domain}.")
@@ -195,9 +207,31 @@ async def find_contacts(domain: str):
     scraped_contacts = await crawl_domain_for_emails(domain)
     contacts.extend(scraped_contacts)
     
+<<<<<<< HEAD
     # 2. Hunter.io (if API key is configured)
     if not api_key or api_key == 'your_hunter_key':
         print(f"[Info] No Hunter API key configured — using web-scraped contacts only for {domain}.")
+=======
+    # 2. Hunter.io / Mock fallback
+    if not api_key or api_key == 'your_hunter_key':
+        print(f"[Mock] Hunter API: Using mock data for {domain}.")
+        contacts.extend([
+            {
+                "first_name": "Jane",
+                "last_name": "Doe",
+                "value": f"jane.doe@{domain}",
+                "position": "CEO",
+                "linkedin": f"https://linkedin.com/in/janedoe-{domain.replace('.', '-')}"
+            },
+            {
+                "first_name": "John",
+                "last_name": "Smith",
+                "value": f"john.smith@{domain}",
+                "position": "Head of Engineering",
+                "linkedin": None
+            }
+        ])
+>>>>>>> 0afe74a5532695c5acf969057c8e84c186b53c27
     else:
         url = f"https://api.hunter.io/v2/domain-search?domain={domain}&api_key={api_key}"
         try:

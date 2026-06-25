@@ -11,4 +11,7 @@ redis
 python-dotenv
 playwright
 beautifulsoup4
+<<<<<<< HEAD
 requests
+=======
+>>>>>>> 0afe74a5532695c5acf969057c8e84c186b53c27

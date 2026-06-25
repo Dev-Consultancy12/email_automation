@@ -39,6 +39,7 @@ def find_emails(html: str) -> set:
     
     # Standard email regex pattern
     email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+<<<<<<< HEAD
     raw_emails = set(re.findall(email_pattern, html))
     
     # Also extract emails from mailto: href attributes (strip query strings)
@@ -85,6 +86,18 @@ def find_emails(html: str) -> set:
         if len(parts) < 2 or len(parts[-1]) < 2:
             continue
         
+=======
+    emails = set(re.findall(email_pattern, html))
+    
+    # Filter out common false positives (image files that look like emails, sentry emails, etc.)
+    valid_emails = set()
+    for email in emails:
+        email = email.lower()
+        if any(email.endswith(ext) for ext in ['.png', '.jpg', '.jpeg', '.gif', '.webp']):
+            continue
+        if 'sentry' in email or 'example' in email or 'test@' in email or 'noreply' in email or 'no-reply' in email:
+            continue
+>>>>>>> 0afe74a5532695c5acf969057c8e84c186b53c27
         valid_emails.add(email)
         
     return valid_emails
